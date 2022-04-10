@@ -1,28 +1,41 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs')
+const ExcelJS = require('exceljs')
 
-(async () => {
-  const browser = await puppeteer.launch({ headless: false});
-  const page = await browser.newPage();
-  await page.goto('https://en.wikipedia.org/wiki/Road_safety_in_Europe');
+const workbook = new ExcelJS.Workbook()
+const sheet = workbook.addWorksheet('Firts Pag')
 
- const myDatasTrated = await page.evaluate(()=>{
-      const nodeListTH = [document.getElementsByClassName("headerSort")]
-      const nodeLIstTHITEM0 = nodeListTH[0]
-     
+const myDatasTrated =  () => {
+    (async () => { 
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    await page.goto('https://en.wikipedia.org/wiki/Road_safety_in_Europe');
 
-      const nodeListTR = [document.querySelectorAll("tbody")]
-      const nodeListTRTable = nodeListTR[0]
-      const nodeListTRTBOdyTable = nodeListTRTable[1]
+    const myDatasTrated = await page.evaluate(() => {
+        const nodeListTH = [document.getElementsByClassName("headerSort")]
+        const nodeLIstTHITEM0 = nodeListTH[0]
 
-      const myDatasTrated = [nodeLIstTHITEM0, nodeListTRTBOdyTable]
-    console.log(nodeLIstTHITEM0  )
-    console.log(nodeListTRTBOdyTable)
-    return myDatasTrated 
+
+        const nodeListTR = [document.querySelectorAll("tbody")]
+        const nodeListTRTable = nodeListTR[0]
+        const nodeListTRTBOdyTable = nodeListTRTable[1]
+
+        const myDatasTrated = [nodeLIstTHITEM0, nodeListTRTBOdyTable]
+        return myDatasTrated
     })
-    let writeStream = fs.createWriteStream("Report.xls");
 
+    for (let index = 0; index <  myDatasTrated ; index++) {
+        
+         sheet.columns = [
+       // {header: `${}`, hey: '1Colum'},
+        //{header: `${}`, hey: '1Colum'}
+        
+    ]
+    }
+   
+    
+    //  await browser.close()
+})()}
 
+myDatasTrated()
 
-    await browser.close( )
-})();
+module.exports = myDatasTrated
